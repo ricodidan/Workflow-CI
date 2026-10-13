@@ -53,7 +53,7 @@ jobs:
           IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/churn-model:latest"
           
           echo "Building Docker image from $MODEL_URI..."
-          mlflow models build-docker -m "$MODEL_URI" -n "$IMAGE_NAME" --enable-mlserver
+          mlflow models build-docker -m "$MODEL_URI" -n "$IMAGE_NAME"
           
           echo "Pushing image to Docker Hub..."
           docker push "$IMAGE_NAME"
