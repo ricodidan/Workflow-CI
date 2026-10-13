@@ -25,14 +25,15 @@ jobs:
 
       - name: 4. Run MLflow Project Training
         run: |
-          cd MLProject
-          python modelling.py --data_path telco_churn_preprocessing/customer_churn_clean.csv
+          mlflow run MLProject --env-manager=local -P data_path=telco_churn_preprocessing/customer_churn_clean.csv
 
       - name: 5. Save Artifacts to GitHub (Skilled)
         uses: actions/upload-artifact@v4
         with:
           name: mlruns-model-artifact
-          path: MLProject/mlruns/
+          path: |
+            mlruns/
+            MLProject/mlruns/
 
       - name: 6. Login to Docker Hub (Advance)
         if: env.DOCKER_USER != ''
@@ -49,7 +50,7 @@ jobs:
           DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
         run: |
           # Cari model directory dari mlruns
-          MODEL_URI=$(find MLProject/mlruns -type d -name "model" | head -n 1)
+          MODEL_URI=$(find . -type d -name "model" | grep -E "mlruns" | head -n 1)
           IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/churn-model:latest"
           
           echo "Building Docker image from $MODEL_URI..."
